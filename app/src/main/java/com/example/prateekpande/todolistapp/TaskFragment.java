@@ -1,12 +1,12 @@
 package com.example.prateekpande.todolistapp;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -14,14 +14,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link TaskFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class TaskFragment extends Fragment {
+public class TaskFragment extends Fragment implements AdapterView.OnItemClickListener{
 
     private OnFragmentInteractionListener mListener;
     private ArrayAdapter arrayAdapter;
@@ -41,6 +40,19 @@ public class TaskFragment extends Fragment {
         tasksList = new ArrayList<>();
         listTaskView = (ListView) getActivity().findViewById(R.id.listViewTasks);
         setAdapter();
+        // register onClick listener
+        listTaskView.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     /**
@@ -63,6 +75,22 @@ public class TaskFragment extends Fragment {
         arrayAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String completedTask = listTaskView.getItemAtPosition(position).toString();
+        updateCompletedTaskList(completedTask);
+        arrayAdapter.notifyDataSetChanged();
+        mListener.onTaskFragmentInteraction(completedTask);
+    }
+
+    /**
+     * This method removes completed tasks
+     * from existing list.
+     */
+    public void updateCompletedTaskList(String completedTask) {
+        tasksList.remove(completedTask);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -75,6 +103,6 @@ public class TaskFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onTaskFragmentInteraction(Uri uri);
+        void onTaskFragmentInteraction(String task);
     }
 }

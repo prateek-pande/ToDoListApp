@@ -1,6 +1,7 @@
 package com.example.prateekpande.todolistapp;
 
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,10 +9,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
-public class MainActivity extends AppCompatActivity implements TaskFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements TaskFragment.OnFragmentInteractionListener,CompletedTaskFragment.OnFragmentInteractionListener{
 
     EditText editTxtAddTask;
     TaskFragment taskFragment;
+    CompletedTaskFragment completedTaskFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnFr
 
                 if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
                     taskFragment.addTaskToList(editTxtAddTask.getText().toString());
-                    refreshFragment();
+                    refreshFragment(taskFragment);
                     editTxtAddTask.setText("");
                     return true;
                 }
@@ -52,14 +54,19 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnFr
      * This method is responsible for reloading
      * the fragment.
      */
-    public void refreshFragment(){
+    public void refreshFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.addTaskFragment,taskFragment);
+        transaction.replace(R.id.addTaskFragment,fragment);
         transaction.commit();
     }
 
     @Override
-    public void onTaskFragmentInteraction(Uri uri) {
-        //TODO
+    public void onTaskFragmentInteraction(String task) {
+
+    }
+
+    @Override
+    public void onCompletedTaskFragmentInteraction(Uri uri) {
+
     }
 }
