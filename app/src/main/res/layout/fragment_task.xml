@@ -13,6 +13,6 @@
         android:id="@+id/listViewTasks"
         android:layout_gravity="left|top"
         android:scrollbars="vertical"
-        android:scrollbarStyle="insideOverlay"/>
+        android:scrollbarStyle="insideOverlay" />
 
 </FrameLayout>

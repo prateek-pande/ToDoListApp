@@ -68,7 +68,7 @@ public class TaskFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     /**
-     * This method addds task to
+     * This method adds task to
      * fragment(List View)
      * @param task
      */
@@ -82,22 +82,28 @@ public class TaskFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String completedTask = listTaskView.getItemAtPosition(position).toString();
-        updateCompletedTaskList(completedTask);
-        mListener.onTaskFragmentInteraction(completedTask,position);
+        updateCompletedTaskList(position);
+        mListener.onTaskFragmentEditTaskInteraction(completedTask, position);
     }
 
     /**
      * This method removes completed tasks
      * from existing list.
      */
-    public void updateCompletedTaskList(String completedTask) {
-        tasksList.remove(completedTask);
+    public void updateCompletedTaskList(int position) {
+        tasksList.remove(position);
+        listTaskView.getChildAt(position).setEnabled(true);
         arrayAdapter.notifyDataSetChanged();
+
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        updateCompletedTaskList(listTaskView.getItemAtPosition(position).toString());
+
+        listTaskView.getChildAt(position).setEnabled(false);
+
+        mListener.onTaskFragmentDeleteTaskInteraction(position);
+//        parent.getChildAt(position).setEnabled(true);
         return true;
     }
 
@@ -113,6 +119,7 @@ public class TaskFragment extends Fragment implements AdapterView.OnItemClickLis
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onTaskFragmentInteraction(String task,int position);
+        void onTaskFragmentEditTaskInteraction(String task,int position);
+        void onTaskFragmentDeleteTaskInteraction(int position);
     }
 }
