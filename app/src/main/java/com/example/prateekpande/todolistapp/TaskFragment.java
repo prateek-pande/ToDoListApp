@@ -20,7 +20,7 @@ import java.util.List;
  * {@link TaskFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class TaskFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class TaskFragment extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener{
 
     private OnFragmentInteractionListener mListener;
     private ArrayAdapter arrayAdapter;
@@ -40,8 +40,11 @@ public class TaskFragment extends Fragment implements AdapterView.OnItemClickLis
         tasksList = new ArrayList<>();
         listTaskView = (ListView) getActivity().findViewById(R.id.listViewTasks);
         setAdapter();
-        // register onClick listener
+
+        // register onItemClick listener
         listTaskView.setOnItemClickListener(this);
+        //register onItemLongClick listener
+        listTaskView.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -69,18 +72,18 @@ public class TaskFragment extends Fragment implements AdapterView.OnItemClickLis
      * fragment(List View)
      * @param task
      */
-    public void addTaskToList(String task){
+    public void addTaskToList(String task,int position){
 
-        tasksList.add(0, task);
+        tasksList.add(position, task);
         arrayAdapter.notifyDataSetChanged();
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String completedTask = listTaskView.getItemAtPosition(position).toString();
         updateCompletedTaskList(completedTask);
-        arrayAdapter.notifyDataSetChanged();
-        mListener.onTaskFragmentInteraction(completedTask);
+        mListener.onTaskFragmentInteraction(completedTask,position);
     }
 
     /**
@@ -89,6 +92,13 @@ public class TaskFragment extends Fragment implements AdapterView.OnItemClickLis
      */
     public void updateCompletedTaskList(String completedTask) {
         tasksList.remove(completedTask);
+        arrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        updateCompletedTaskList(listTaskView.getItemAtPosition(position).toString());
+        return true;
     }
 
     /**
@@ -103,6 +113,6 @@ public class TaskFragment extends Fragment implements AdapterView.OnItemClickLis
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onTaskFragmentInteraction(String task);
+        void onTaskFragmentInteraction(String task,int position);
     }
 }

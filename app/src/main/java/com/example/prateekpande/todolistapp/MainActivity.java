@@ -11,9 +11,10 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity implements TaskFragment.OnFragmentInteractionListener,CompletedTaskFragment.OnFragmentInteractionListener{
 
-    EditText editTxtAddTask;
-    TaskFragment taskFragment;
-    CompletedTaskFragment completedTaskFragment;
+    private EditText editTxtAddTask;
+    private TaskFragment taskFragment;
+    private CompletedTaskFragment completedTaskFragment;
+    private int taskAddPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnFr
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                 if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {
-                    taskFragment.addTaskToList(editTxtAddTask.getText().toString());
-                    refreshFragment(taskFragment);
+                    taskFragment.addTaskToList(editTxtAddTask.getText().toString(), taskAddPosition);
                     editTxtAddTask.setText("");
+                    taskAddPosition=0;
                     return true;
                 }
                 return false;
@@ -51,18 +52,20 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnFr
     }
 
     /**
-     * This method is responsible for reloading
-     * the fragment.
+     * This method is responsible for replacing
+     * existing fragment.
      */
-    public void refreshFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.addTaskFragment,fragment);
+        transaction.replace(R.id.addTaskFragment, fragment);
         transaction.commit();
     }
 
     @Override
-    public void onTaskFragmentInteraction(String task) {
-
+    public void onTaskFragmentInteraction(String task,int position) {
+        editTxtAddTask.setText(task);
+        taskAddPosition = position;
+//        replaceFragment(taskFragment);
     }
 
     @Override
